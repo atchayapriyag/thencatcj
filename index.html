@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch Display</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Bacon Ipsum</h1>
+      <div id="baconText"></div>
+      <button id="refreshButton">Refresh</button>
+      <div id="loadingIndicator" style="display: none">Loading.......</div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const baconTextElement = document.getElementById("baconText");
+        const refreshButton = document.getElementById("refreshButton");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+
+        refreshButton.addEventListener("click", fetchData);
+
+        function fetchData() {
+          loadingIndicator.style.display = "block";
+          fetch("https://baconipsum.com/api/?type=all")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Failed to fetch data");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              baconTextElement.textContent = data[0];
+            })
+            .catch((error) => {
+              console.error("Error fetching data:", error);
+              baconTextElement.textContent = "Failed to fetch data";
+            })
+            .finally(() => {
+              loadingIndicator.style.display = "none";
+            });
+        }
+
+        // Fetch data on page load
+        fetchData();
+      });
+    </script>
+  </body>
+</html>
